@@ -1,7 +1,7 @@
 <?php
 session_start();
 if(!isset($_SESSION['role']) || $_SESSION['role']!='employer'){
-  header('Location: ../login.php'); 
+  header('Location: ../login.php');
   exit;
 }
 
@@ -20,7 +20,7 @@ FROM job_applications
 JOIN jobs ON job_applications.job_id = jobs.id
 JOIN users ON job_applications.employee_id = users.id
 WHERE jobs.employer_id = ?
-ORDER BY job_applications.applied_at DESC
+ORDER BY job_applications.id DESC
 ";
 
 $stmt = $conn->prepare($sql);
@@ -43,13 +43,25 @@ $result = $stmt->get_result();
 <tr>
   <th>#</th>
   <th>Job Title</th>
-  <th>Employee Name</th>
+  <th>Applicant Name</th>
   <th>Email</th>
   <th>Applied Date</th>
 </tr>
 
-<?php $i=1; while($row = $result->fetch_assoc()){ ?>
+<?php $i=1; while($row=$result->fetch_assoc()){ ?>
 <tr>
   <td><?= $i++ ?></td>
-  <td><?= $row['job_title'] ?></_]()
-}
+  <td><?= $row['job_title'] ?></td>
+  <td><?= $row['employee_name'] ?></td>
+  <td><?= $row['employee_email'] ?></td>
+  <td><?= $row['applied_at'] ?></td>
+</tr>
+<?php } ?>
+
+</table>
+
+<a href="dashboard.php" class="btn btn-secondary">Back</a>
+</div>
+
+</body>
+</html>

@@ -80,3 +80,8 @@ footer p {
 .bi {
   color: #FFC107;
 }
+/* Employee dashboard cards */
+.card.btn:hover{
+  transform: scale(1.05);
+  transition: 0.3s;
+}
