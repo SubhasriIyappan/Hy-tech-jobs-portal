@@ -11,8 +11,8 @@ if (!isset($_POST['role'])) {
     die("Invalid request");
 }
 
-$role  = $_POST['role'];
-$name  = $_POST['name'];
+$role = $_POST['role'];
+$name = $_POST['name'];
 $email = $_POST['email'];
 $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
@@ -22,7 +22,7 @@ $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 $userSql = "INSERT INTO users (name,email,password,role) VALUES (?,?,?,?)";
 $stmt = $conn->prepare($userSql);
 
-if(!$stmt){
+if (!$stmt) {
     die("User Prepare Failed: " . $conn->error);
 }
 
@@ -34,38 +34,69 @@ $user_id = $stmt->insert_id;
 /* ================= EMPLOYEE ================= */
 if ($role === 'employee') {
 
-    $dob          = $_POST['dob'];
-    $qualification= $_POST['qualification'];
-    $experience   = $_POST['experience'];
-    $gender       = $_POST['gender'];
-    $skills       = $_POST['skills'];
-    $location     = $_POST['location'];
-    $year         = $_POST['year_of_passing'];
-    $mobile       = $_POST['mobile'];
-    $college      = $_POST['college'];
+    $dob = $_POST['dob'];
+    $qualification = $_POST['qualification'];
+    $experience = $_POST['experience'];
+    $gender = $_POST['gender'];
+    $skills = $_POST['skills'];
+    $city = $_POST['city'];
+    $state = $_POST['state'];
+    $country = $_POST['country'];
+    $year = $_POST['year_of_passing'];
+    $mobile = $_POST['mobile'];
+    $college = $_POST['college'];
+
+    /* Resume Upload */
+    $resumeName = NULL;
+    if (!empty($_FILES['resume']['name'])) {
+        $resumeName = time() . '_' . $_FILES['resume']['name'];
+        if (!is_dir("../uploads/resumes"))
+            mkdir("../uploads/resumes", 0777, true);
+        move_uploaded_file(
+            $_FILES['resume']['tmp_name'],
+            "../uploads/resumes/" . $resumeName
+        );
+    }
+
+    /* Profile Image Upload */
+    $profileImgName = NULL;
+    if (!empty($_FILES['profile_img']['name'])) {
+        $profileImgName = time() . '_' . $_FILES['profile_img']['name'];
+        if (!is_dir("../uploads/images"))
+            mkdir("../uploads/images", 0777, true);
+        move_uploaded_file(
+            $_FILES['profile_img']['tmp_name'],
+            "../uploads/images/" . $profileImgName
+        );
+    }
 
     $sql = "INSERT INTO employee_details
-    (user_id,dob,qualification,experience,gender,skills,location,year_of_passing,mobile,college)
-    VALUES (?,?,?,?,?,?,?,?,?,?)";
+    (user_id,dob,qualification,experience,gender,skills,city,state,country,year_of_passing,mobile,college,resume_path,profile_img)
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     $stmt = $conn->prepare($sql);
 
-    if(!$stmt){
+    if (!$stmt) {
         die("Employee Prepare Failed: " . $conn->error);
     }
 
     $stmt->bind_param(
-        "isssssssis",
+        "issssssssissss",
         $user_id,
         $dob,
         $qualification,
         $experience,
         $gender,
         $skills,
-        $location,
+        $city,
+        $state,
+        $country,
         $year,
         $mobile,
-        $college
+        $college,
+        $college,
+        $resumeName,
+        $profileImgName
     );
 
     $stmt->execute();
@@ -77,13 +108,13 @@ if ($role === 'employee') {
 /* ================= EMPLOYER ================= */
 if ($role === 'employer') {
 
-    $company_name    = $_POST['company_name'];
-    $company_email   = $_POST['company_email'];
-    $company_phone   = $_POST['company_phone'];
+    $company_name = $_POST['company_name'];
+    $company_email = $_POST['company_email'];
+    $company_phone = $_POST['company_phone'];
     $company_address = $_POST['company_address'];
     $company_website = $_POST['company_website'];
 
-    $hr_name  = $_POST['hr_name'];
+    $hr_name = $_POST['hr_name'];
     $hr_phone = $_POST['hr_phone'];
     $hr_email = $_POST['hr_email'];
 
@@ -106,7 +137,7 @@ if ($role === 'employer') {
 
     $stmt = $conn->prepare($sql);
 
-    if(!$stmt){
+    if (!$stmt) {
         die("Employer Prepare Failed: " . $conn->error);
     }
 

@@ -18,10 +18,14 @@ qualification VARCHAR(100),
 experience VARCHAR(50),
 gender VARCHAR(20),
 skills TEXT,
-location VARCHAR(100),
+city VARCHAR(100),
+state VARCHAR(100),
+country VARCHAR(100),
 year_of_passing YEAR,
 mobile VARCHAR(10),
-college VARCHAR(150)
+college VARCHAR(150),
+resume_path VARCHAR(255),
+profile_img VARCHAR(255)
 );
 CREATE TABLE employer_details (
 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -54,6 +58,7 @@ CREATE TABLE jobs (
   location VARCHAR(100),
   experience VARCHAR(50),
   salary VARCHAR(50),
+  vacancy_count INT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 -- EMPLOYEE – VIEW & APPLY JOBS
@@ -62,5 +67,6 @@ CREATE TABLE job_applications (
   id INT AUTO_INCREMENT PRIMARY KEY,
   job_id INT,
   employee_id INT,
-  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  status ENUM('pending','approved','rejected') DEFAULT 'pending'
 );
