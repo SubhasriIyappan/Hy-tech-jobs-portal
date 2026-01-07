@@ -19,6 +19,22 @@ $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 /* -------------------------
    1️⃣ Insert into users table
 --------------------------*/
+/* -------------------------
+   0️⃣ Check if email already exists
+--------------------------*/
+$check = $conn->prepare("SELECT id FROM users WHERE email=?");
+$check->bind_param("s", $email);
+$check->execute();
+$check->store_result();
+
+if ($check->num_rows > 0) {
+    header("Location: register.php?error=email_exists");
+    exit;
+}
+
+/* -------------------------
+   1️⃣ Insert into users table
+--------------------------*/
 $userSql = "INSERT INTO users (name,email,password,role) VALUES (?,?,?,?)";
 $stmt = $conn->prepare($userSql);
 
@@ -93,7 +109,6 @@ if ($role === 'employee') {
         $country,
         $year,
         $mobile,
-        $college,
         $college,
         $resumeName,
         $profileImgName
